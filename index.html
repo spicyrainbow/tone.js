@@ -1,4 +1,4 @@
-<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js?v=9000"></script>
 <script src="https://unpkg.com/tone">
 
 </script>
@@ -9,13 +9,28 @@
   /* global nn, Tone */
   
 const synth = new Tone.Synth().toDestination()
+const scale = nn.createScale('C4', 'major')
 let keydown = false
+ let step = 0
+
 
 function startPlaying () {
   if (!keydown) {
+const next = scale[step]
+synth.triggerAttack(next)
+    step++
+    if (step >= scale.length) step = 0
     
-  synth.triggerAttack(220)
-    keydown = true
+  // const ran = nn.random(scale)
+  // let keydown = false
+ 
+    // const ran = nn.random(nn.notes) + 4
+// hg4 here meants 4th octave 
+    
+  // synth.triggerAttack(ran)
+  //   //can use letters
+  //   //the number that refers to the note, doubling gets you octave
+  //   keydown = true
   
 }
   
@@ -25,6 +40,7 @@ function startPlaying () {
     // keydown/up music lingo
     synth.triggerRelease()
 keydown = false
+  
   }
   
   nn.on('keydown', startPlaying)
