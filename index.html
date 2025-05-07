@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
-
   <meta charset="UTF-8">
   <title>Speech Bubble</title>
-  <h1>Press anykeys to play the speech bubble</h1>
   <style>
     /* Centering container */
     body {
@@ -16,17 +13,9 @@
       align-items: center;
       background: #fafafa;
     }
-    
-h1 {
-      position: fixed;        
-      top: 0;                 
-      left: 50%;  
-      transform: translateX(-50%); 
-      margin: 1rem 0;         
-    }
 
    
-    
+
     
     .speech-bubble {
       position: relative;
@@ -56,51 +45,59 @@ h1 {
 </head>
 <body>
   <div class="speech-bubble">
-    Hello wooo0ooOorld!
+    HelllooooOo0oo World!
   </div>
 
 
 
 <script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js?v=9000"></script>
-<script src="https://unpkg.com/tone">
-
-</script>
+<script src="https://unpkg.com/tone"></script>
 
 
 
 <script>
   /* global nn, Tone */
   
-   document.addEventListener('DOMContentLoaded', function() {
-      // 2) Find the bubble
-      const bubble = document.querySelector('.speech-bubble');
-
-      // 3) Whenever any key is pressed...
-      document.addEventListener('keydown', function() {
-        // a) pick three random numbers 0–255
-        const r = Math.floor(Math.random() * 256);
-        const g = Math.floor(Math.random() * 256);
-        const b = Math.floor(Math.random() * 256);
-        // b) build an "rgb(r, g, b)" string
-        const randomColor = 'rgb(' + r + ',' + g + ',' + b + ')';
-        // c) apply it
-        bubble.style.background = randomColor;
-        bubble.style.setProperty('--bubble-color', randomColor);
-      });
-    });
-  
 const synth = new Tone.Synth().toDestination()
 const scale = nn.createScale('C4', 'major')
 let keydown = false
- let step = 0
+let step = 0
 
+
+const sounds = {
+  imessage: 'imessage.mp3',
+  snapchat: 'snapchat.mp3',
+  whatsapp: 'whatsapp.mp3' 
+}
+ 
+let music = new Tone.Players(sounds).toDestination()
+  
+function changeColor () {
+  const ranColor = nn.randomColor()
+  const bubble = nn.get('.speech-bubble')
+  bubble.style.background = ranColor;
+  bubble.style.setProperty('--bubble-color', ranColor);
+}
 
 function startPlaying () {
+  music.player('imessage').start()
   if (!keydown) {
-const next = scale[step]
-synth.triggerAttack(next)
-    step++
-    if (step >= scale.length) step = 0
+    const messageSounds = Object.keys(sounds)
+    const currentSound = nn.random(messageSounds);
+    music.player(currentSound).start()
+   
+    keydown = true;
+  }
+}
+  
+    function keyRelease () {
+      keydown = false 
+    }
+    
+// const next = scale[step]
+// synth.triggerAttack(next)
+//     step++
+//     if (step >= scale.length) step = 0
     
   // const ran = nn.random(scale)
   // let keydown = false
@@ -112,22 +109,12 @@ synth.triggerAttack(next)
   //   //can use letters
   //   //the number that refers to the note, doubling gets you octave
   //   keydown = true
-}
-  
-}
-  
-  function stopPlaying () {
-    // keydown/up music lingo
-    synth.triggerRelease()
-keydown = false
-  
-  }
-  
-  
-  
-  nn.on('keydown', startPlaying)
-  nn.on('keyup', stopPlaying)
 
+
+  nn.on('keydown', changeColor)
+  nn.on('keydown', startPlaying)
+  nn.on('keyup', keyRelease)
+ 
   
 </script>
   </body>
